@@ -17,7 +17,7 @@ import { title } from "process";
 export const RESUME_DATA = {
   name: "OSAID QATTAN",
   initials: "OQ",
-  location: "Abu Dhabi, UAE",
+  location: "Dubai, UAE",
   about: "Ethical Hacking • Pentesting • AppSec • Secure Flutter & Spring Boot",
   summary: (
     <>
