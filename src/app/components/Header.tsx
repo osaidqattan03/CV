@@ -150,14 +150,14 @@ export function Header() {
           aria-labelledby="resume-name"
         >
           <p className="font-bold mb-2 sm:mb-4 text-lg sm:text-2xl">
-            <TypingAnimation 
-              phrases={["First Class CyberSecurity Graduate", "Full-Stack Developer"]}
+            <TypingAnimation
+              phrases={["Full-Stack Software Engineer", "Applied AI & Integrations"]}
               typingSpeed={80}
               deletingSpeed={40}
               pauseDuration={1000}
             />
           </p>
-          <p className="mb-2 sm:mb-4 text-sm sm:text-base">Java SpringBoot • Python FastAPI & Flutter Dart • Ethical Hacking • Pentesting • AppSec</p>
+          <p className="mb-2 sm:mb-4 text-sm sm:text-base">Python FastAPI • TypeScript / Node.js • React & Next.js • PostgreSQL • Meta / WhatsApp APIs</p>
         </div>
 
         <div className="space-y-1">

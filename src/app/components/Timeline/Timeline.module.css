@@ -35,34 +35,52 @@
 }
 
 
-/* Timeline Item Styling */
+/* Timeline Item Styling — visible by default (no JS required), with a
+   percentage-based width so the two columns stay symmetric and responsive
+   around the center line at any screen size. */
 .timelineItem {
   position: relative;
-  width: 320px;
+  width: calc(50% - 30px);
   padding: 20px;
   box-sizing: border-box;
   text-align: left;
-  opacity: 0; /* Initially hidden */
+  opacity: 1;
   z-index: 110; /* Neutral stacking context */
-  transition: opacity 1.2s ease, transform 1.2s ease; /* Slower, smoother transition */
   margin-bottom: 40px;
+  animation: tlFadeUp 0.6s ease both; /* CSS-only entrance */
 }
 
-/* Initial positions for left and right items */
+/* Left column left of the center line; right column to the right. */
 .timelineItem.left {
-  transform: translateY(20px); /* Start slightly below */
-  left: calc(50% - 350px); /* Position to the left of center line */
+  left: 0;
 }
 
 .timelineItem.right {
-  transform: translateY(20px); /* Start slightly below */
-  left: calc(50% + 30px); /* Position to the right of center line */
+  left: calc(50% + 30px);
 }
 
-/* When the item is visible (via IntersectionObserver) */
+/* Progressive-enhancement hook for the IntersectionObserver (no-op now that
+   items are visible by default, but keeps the JS class name valid). */
 .timelineItem.visible {
   opacity: 1;
-  transform: translateY(0); /* Move to the normal position */
+  transform: translateY(0);
+}
+
+@keyframes tlFadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .timelineItem {
+    animation: none;
+  }
 }
 
 /* Circle Styling */
@@ -194,5 +212,58 @@
   
   .timelineList::after {
     width: 2px !important;
+  }
+}
+
+/* ---- Print: collapse the alternating timeline into a clean stacked list ---- */
+@media print {
+  .timelineContainer {
+    margin: 0 auto;
+    padding: 0;
+    overflow: visible;
+  }
+  .timelineList::after {
+    display: none;
+  }
+  .timelineItem,
+  .timelineItem.left,
+  .timelineItem.right {
+    position: static !important;
+    width: 100% !important;
+    left: auto !important;
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
+    padding: 2px 0 !important;
+    margin-bottom: 8px !important;
+    break-inside: avoid;
+  }
+  .circle {
+    display: none !important;
+  }
+  .content {
+    box-shadow: none !important;
+    border: none !important;
+    padding: 0 !important;
+    background: transparent !important;
+  }
+  .content::before {
+    display: none !important;
+  }
+  .date {
+    color: #000 !important;
+    background: transparent !important;
+    padding: 0 !important;
+    margin-bottom: 2px !important;
+    font-size: 11px !important;
+    font-weight: 700;
+  }
+  .title {
+    font-size: 13px !important;
+    margin-bottom: 2px !important;
+  }
+  .descr {
+    font-size: 11px !important;
+    line-height: 1.4 !important;
   }
 }

@@ -4,10 +4,8 @@ import React, { useState, useEffect } from "react";
 import { Badge } from "../../components/ui/badge";
 import {
   Card,
-  CardHeader,
   CardTitle,
   CardDescription,
-  CardContent,
 } from "../../components/ui/card";
 import { Section } from "../../components/ui/section";
 import { RESUME_DATA } from "../../data/resume-data";
@@ -64,14 +62,14 @@ function ProjectTags({ tags }: ProjectTagsProps) {
 
   return (
     <ul
-      className="mt-3 flex list-none flex-wrap gap-2 p-0"
+      className="flex list-none flex-wrap gap-1.5 p-0"
       aria-label="Technologies used"
     >
       {tags.map((tag) => (
         <li key={tag}>
           <Badge
-            className="px-2 py-1 text-base font-medium print:px-1 print:py-0.5 print:text-[8px] print:leading-tight"
-            variant="secondary"
+            variant="outline"
+            className="rounded-md border-border bg-secondary/40 px-2 py-0.5 text-[13px] font-medium text-foreground/70 print:px-1 print:py-0.5 print:text-[8px] print:leading-tight"
           >
             {tag}
           </Badge>
@@ -86,33 +84,71 @@ interface ProjectCardProps {
   description: string;
   tags: ProjectTags;
   link?: string;
+  category?: string;
 }
 
 /**
- * Card component displaying project information
+ * Card component displaying project information.
+ * A left accent bar, category eyebrow, and title-derived monogram give each
+ * card a distinct visual anchor instead of a flat block of text.
  */
-function ProjectCard({ title, description, tags, link }: ProjectCardProps) {
+function ProjectCard({ title, description, tags, link, category }: ProjectCardProps) {
+  const words = title
+    .replace(/[^A-Za-z0-9 ]/g, " ")
+    .split(" ")
+    .filter(Boolean);
+  const monogram = (
+    words.length >= 2
+      ? words.slice(0, 2).map((word) => word[0]).join("")
+      : (words[0]?.match(/[A-Z0-9]/g)?.slice(0, 2).join("") ??
+          words[0]?.slice(0, 2) ??
+          "")
+  ).toUpperCase();
+
   return (
     <Card
-      className="flex h-full flex-col overflow-hidden border p-4 shadow-lg hover:shadow-2xl hover:scale-[1.01] transition-all duration-300"
+      className="group relative flex h-full flex-col overflow-hidden rounded-xl border border-border bg-card shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-foreground/20 hover:shadow-xl print:shadow-none print:hover:translate-y-0"
       role="article"
     >
-      <CardHeader className="pb-3">
-        <div className="space-y-2">
-          <CardTitle className="text-2xl font-semibold">
-            <ProjectLink title={title} link={link} />
-          </CardTitle>
-          <CardDescription
-            className="text-pretty font-mono text-lg leading-relaxed print:text-[10px]"
-            aria-label="Project description"
+      {/* Left accent bar — fills in on hover */}
+      <span
+        className="absolute inset-y-0 left-0 w-[3px] bg-foreground/10 transition-colors duration-300 group-hover:bg-foreground"
+        aria-hidden="true"
+      />
+
+      <div className="flex h-full flex-col gap-3 p-5 sm:p-6 print:gap-1 print:p-3">
+        {/* Category eyebrow + monogram tile */}
+        <div className="flex items-start justify-between gap-3">
+          <span className="mt-1 font-mono text-[11px] font-semibold uppercase tracking-[0.14em] text-muted-foreground print:text-[8px]">
+            {category ?? ""}
+          </span>
+          <span
+            className="flex size-9 flex-shrink-0 items-center justify-center rounded-lg bg-foreground/[0.04] font-mono text-xs font-bold text-foreground/60 ring-1 ring-inset ring-border transition-colors duration-300 group-hover:bg-foreground group-hover:text-background print:hidden"
+            aria-hidden="true"
           >
-            {description}
-          </CardDescription>
+            {monogram}
+          </span>
         </div>
-      </CardHeader>
-      <CardContent className="mt-auto flex">
-        <ProjectTags tags={tags} />
-      </CardContent>
+
+        {/* Title */}
+        <CardTitle className="text-xl font-semibold leading-snug tracking-tight sm:text-[1.6rem] print:text-sm">
+          <ProjectLink title={title} link={link} />
+        </CardTitle>
+
+        {/* Description */}
+        <CardDescription
+          className="text-pretty font-mono text-[15px] leading-relaxed text-foreground/70 print:text-[10px]"
+          aria-label="Project description"
+        >
+          {description}
+        </CardDescription>
+
+        {/* Tech tags pinned to the bottom, above a hairline rule */}
+        <div className="mt-auto pt-4 print:pt-1">
+          <div className="mb-3 h-px w-full bg-border print:mb-1" aria-hidden="true" />
+          <ProjectTags tags={tags} />
+        </div>
+      </div>
     </Card>
   );
 }
@@ -218,14 +254,14 @@ export function Projects({ projects }: ProjectsProps) {
   }
 
   return (
-    <Section className="print-force-new-page scroll-mb-16 print:space-y-4 print:pt-12 mb-16">
+    <Section className="scroll-mb-16 print:space-y-4 mb-16">
       <h2 className="text-4xl font-bold mb-8" id="side-projects">
         Projects
       </h2>
 
-      {/* Simple Projects Container */}
-      <div 
-        className="relative"
+      {/* Simple Projects Container (screen only — carousel) */}
+      <div
+        className="relative print:hidden"
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
         onTouchStart={handleTouchStart}
@@ -267,13 +303,15 @@ export function Projects({ projects }: ProjectsProps) {
             {visibleProjects.map((project, index) => (
               <article
                 key={`${project.title}-${currentIndex}-${index}`}
-                className="h-full overflow-visible"
+                className="h-full overflow-visible animate-card-in print:animate-none"
+                style={{ animationDelay: `${index * 90}ms` }}
               >
                 <ProjectCard
                   title={project.title}
                   description={project.description}
                   tags={project.techStack}
                   link={"link" in project ? project.link.href : undefined}
+                  category={"category" in project ? project.category : undefined}
                 />
               </article>
             ))}
@@ -305,6 +343,26 @@ export function Projects({ projects }: ProjectsProps) {
             ))}
           </div>
         </div>
+      </div>
+
+      {/* Print view: render ALL projects as a static grid. The on-screen
+          carousel only mounts two cards at a time, which would otherwise
+          drop projects from a printed PDF. */}
+      <div className="hidden print:grid print:grid-cols-2 print:gap-3 items-start">
+        {projects.map((project, index) => (
+          <article
+            key={`print-${project.title}-${index}`}
+            className="break-inside-avoid"
+          >
+            <ProjectCard
+              title={project.title}
+              description={project.description}
+              tags={project.techStack}
+              link={"link" in project ? project.link.href : undefined}
+              category={"category" in project ? project.category : undefined}
+            />
+          </article>
+        ))}
       </div>
     </Section>
   );

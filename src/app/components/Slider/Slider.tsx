@@ -34,18 +34,18 @@ const Slider: React.FC<SliderProps> = ({ sliders }) => {
             <h2 className="text-4xl font-bold mb-8">Certificates</h2>
             
             {/* Centered grid layout */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 justify-items-center max-w-4xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 justify-items-center max-w-4xl mx-auto print:grid-cols-2 print:gap-4">
                 {sliders.map((slider) => (
                     <div
                         key={slider.id}
-                        className="relative group cursor-pointer max-w-md"
+                        className="relative group cursor-pointer max-w-md break-inside-avoid"
                         onClick={() => handleImageClick(slider.imageUrl, slider.title)}
                     >
                         {/* Certificate image */}
                         <img
                             src={slider.imageUrl}
                             alt={slider.title}
-                            className="w-full h-64 object-cover rounded-lg shadow-lg transition-all duration-300 group-hover:scale-105 group-hover:shadow-xl"
+                            className="w-full h-64 object-cover rounded-lg shadow-lg transition-all duration-300 group-hover:scale-105 group-hover:shadow-xl print:h-44 print:shadow-none"
                         />
 
                         {/* Hover text overlay */}

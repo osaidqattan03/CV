@@ -45,17 +45,17 @@ export function Skills({ skills, className }: SkillsProps) {
   return (
     <Section>
       <h2 className="text-4xl font-bold mb-8">Skills</h2>
-      <div className="flex flex-wrap gap-6 justify-center">
+      <div className="flex flex-wrap gap-6 justify-center print:gap-3 print:break-inside-avoid">
         {RESUME_DATA.skills.map((skill) => {
           return (
             <div
               key={skill.name}
-              className="relative group flex items-center justify-center w-20 h-20"
+              className="relative group flex items-center justify-center w-20 h-20 print:w-12 print:h-12"
             >
               <img
                 src={skill.logo}
                 alt={skill.name}
-                className="w-16 h-16 transition-transform group-hover:scale-125"
+                className="w-16 h-16 transition-transform group-hover:scale-125 print:w-9 print:h-9"
               />
               <span className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-full text-base font-medium bg-gray-800 text-white px-2 py-1 rounded opacity-0 group-hover:translate-y-2 group-hover:opacity-100 transition-all duration-300 whitespace-nowrap">
                 {skill.name}
